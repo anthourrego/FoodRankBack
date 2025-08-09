@@ -20,4 +20,12 @@ class Event extends Model
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * Get the branch where the event takes place.
+     */
+    public function restaurantBranch()
+    {
+        return $this->belongsTo(RestaurantBranch::class);
+    }
 }
