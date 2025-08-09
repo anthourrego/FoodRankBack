@@ -28,4 +28,8 @@ class Restaurant extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function restaurantBranches(){
+        return $this->hasMany(RestaurantBranch::class);
+    }
 }

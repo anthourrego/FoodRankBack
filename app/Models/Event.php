@@ -28,4 +28,12 @@ class Event extends Model
     {
         return $this->belongsTo(RestaurantBranch::class);
     }
+
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
+
+    public function eventProducts(){
+        return $this->hasMany(EventProduct::class);
+    }
 }

@@ -18,4 +18,8 @@ class RestaurantProduct extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function restaurant(){
+        return $this->belongsTo(Restaurant::class,'restaurant_id');
+    }
 }

@@ -13,4 +13,8 @@ class EventProduct extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function restaurantProduct(){
+        return $this->belongsTo(RestaurantProduct::class, 'product_id');
+    }
 }
