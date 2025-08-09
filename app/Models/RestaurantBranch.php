@@ -20,4 +20,8 @@ class RestaurantBranch extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
 }
