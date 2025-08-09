@@ -14,7 +14,7 @@ class EventProductService
 
     public function get()
     {
-        $eventProducts = EventProduct::with(['restaurantProduct'])->where('is_active','=',1)->get();
+        $eventProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches'])->where('is_active','=',1)->get();
         return $eventProducts;
     }
 }
