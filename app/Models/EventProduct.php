@@ -17,4 +17,8 @@ class EventProduct extends Model
     public function restaurantProduct(){
         return $this->belongsTo(RestaurantProduct::class, 'product_id');
     }
+
+    public function branchsProduct(){
+        return $this->hasMany(EventProductBranch::class);
+    }
 }

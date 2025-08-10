@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Http\Controllers\Api\RestaurantProduct;
+namespace App\Http\Controllers\Api\RestaurantProducts;
 
 use App\Http\Controllers\Controller;
 use App\Models\RestaurantProduct;

@@ -15,13 +15,13 @@ class EventProductService
 
     public function get()
     {
-        $eventProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches.city'])->where('is_active', '=', 1)->get();
+        $eventProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches.city', 'branchsProduct.branch'])->where('is_active', '=', 1)->get();
         return $eventProducts;
     }
 
     public function filter($idEvent = 0, $idProduct = 0)
     {
-        $eventProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches.city'])
+        $eventProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches.city', 'branchsProduct.branch'])
         ->where('is_active', '=', 1)
         ->where('event_id', '=', $idEvent)
         ->where('product_id', '=', $idProduct)->get();

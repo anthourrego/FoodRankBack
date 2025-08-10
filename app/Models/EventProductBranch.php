@@ -16,4 +16,8 @@ class EventProductBranch extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function branch(){
+        return $this->belongsTo(RestaurantBranch::class, 'restaurant_branch_id');
+    }
 }
