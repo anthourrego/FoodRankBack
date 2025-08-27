@@ -14,3 +14,6 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/events-products/find', [EventProductsController::class, 'findEventProduct']);
 Route::get('/events-products', [EventProductsController::class, 'index']);
 Route::post('/reviews/save-vote',[ReviewsController::class, 'store']);
+
+Route::get('/imageproduct/{product}', [EventProductsController::class, 'showImage']);
+Route::get('/imageproduct', [EventProductsController::class, 'showImage']);
