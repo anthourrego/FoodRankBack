@@ -16,11 +16,11 @@ return new class extends Migration
             $table->foreignId('event_product_id')->constrained('event_products');
             $table->foreignId('event_product_branch_id')->constrained('event_product_branches');
             $table->unsignedTinyInteger('rating')->check('rating >= 1 AND rating <= 5');
-            $table->string('comment');
-            $table->string('latitude', 100);
-            $table->string('longitude', 100);
-            $table->string('ip', 100);
-            $table->string('mac', 150);
+            $table->string('comment')->nullable();
+            $table->string('latitude', 100)->nullable();
+            $table->string('longitude', 100)->nullable();
+            $table->string('ip', 100)->nullable();
+            $table->string('mac', 150)->nullable();
             $table->string('fingerprint_device')->unique();
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users');
