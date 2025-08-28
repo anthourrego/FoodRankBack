@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api\EventProducts;
 
 use App\Http\Controllers\Controller;
 use App\Models\EventProduct;
+use App\Models\RestaurantProduct;
 use App\Services\EventProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class EventProductsController extends Controller
@@ -32,6 +35,20 @@ class EventProductsController extends Controller
         $idEvent = $request->get('idEvent') ?? 0;
         $restaurantProduct = $this->eventProductService->filter($idEvent,$idProduct);
         return response()->json($restaurantProduct,200);
+    }
+
+    public function showImage($imagen = null)
+    {
+        // 1. Define la ruta de la imagen por defecto.
+        $defaultImagePath = public_path('images/nofoto.png');
+
+        if ($imagen && Storage::disk("public")->exists("images/products/{$imagen}")) {
+            // Si existe, devuelve la imagen del producto.
+            return Storage::disk('public')->response("images/products/{$imagen}");
+        }
+
+        // 4. Si no, devuelve la imagen por defecto.
+        return response()->file($defaultImagePath);
     }
 
 }

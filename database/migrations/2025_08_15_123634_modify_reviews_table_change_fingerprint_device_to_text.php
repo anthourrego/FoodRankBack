@@ -21,8 +21,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            /* $table->string('fingerprint_device', 255)->change(); */
-        });
     }
 };

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 150);
             $table->string('description');
-            $table->string('image_url');
+            $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->foreignId('restaurant_id')->constrained('restaurants');
             $table->foreignId('created_by')->nullable()->constrained('users');
