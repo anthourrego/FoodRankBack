@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('address');
             $table->string('phone', 30);
-            $table->string('latitude', 100);
-            $table->string('longitude', 100);
+            $table->string('latitude', 100)->nullable();
+            $table->string('longitude', 100)->nullable();
             $table->boolean('is_active')->default(true);
             $table->foreignId('city_id')->constrained('cities');
             $table->foreignId('restaurant_id')->constrained('restaurants');

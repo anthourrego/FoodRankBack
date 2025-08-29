@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('restaurant_products', function (Blueprint $table) {
             $table->id();
             $table->string('name', 150);
-            $table->string('description');
+            $table->text('description');
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->foreignId('restaurant_id')->constrained('restaurants');
