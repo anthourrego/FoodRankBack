@@ -11,7 +11,13 @@ class ReviewsService
 
     public function store(StoreReviewRequest $request){
       $data = $request->validated();
-      $review = Review::create($data);
-      return $review;
+
+      $vote = Review::where("event_product_id", $data['event_product_id'])->where("event_product_branch_id", $data['event_product_branch_id'])->where("ip", $data['ip'])->first();
+
+      if (!$vote) {
+        $review = Review::create($data);
+        return "Hamburguesa calificada correctamente";
+      }
+      return "Ya calificaste esta hamburguesa";
     }
 }
