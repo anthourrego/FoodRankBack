@@ -33,7 +33,8 @@ class EventProductsController extends Controller
     {
         $idProduct = $request->get('idProduct') ?? 0;
         $idEvent = $request->get('idEvent') ?? 0;
-        $restaurantProduct = $this->eventProductService->filter($idEvent,$idProduct);
+        $idBranch = $request->get('idBranch') ?? 0;
+        $restaurantProduct = $this->eventProductService->filter($idEvent,$idProduct,$idBranch);
         return response()->json($restaurantProduct,200);
     }
 
