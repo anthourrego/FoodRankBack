@@ -21,7 +21,7 @@ class StoreReviewRequest extends FormRequest
             'latitude'                => 'nullable|numeric',
             'longitude'               => 'nullable|numeric',
             'ip'                      => 'nullable|ip',
-            'mac'                     => 'nullable|string|max:17',
+            'deviceId'                => 'nullable|string|max:150',
             'fingerprint_device'      => 'nullable|string|max:3072',
             'is_active'               => 'nullable|boolean',
             'created_by'              => 'nullable|exists:users,id',
