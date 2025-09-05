@@ -24,7 +24,7 @@ class ReviewsController extends Controller
 
         $restaurantProduct = $this->reviewsService->store($request);
         if($restaurantProduct){
-            return response()->json(['message' => 'Review created successfully'],201);
+            return response()->json(['message' => $restaurantProduct],201);
         }
         return response()->json(['message' => 'Review not created'],400);
     }
