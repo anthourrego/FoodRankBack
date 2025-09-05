@@ -27,4 +27,13 @@ class Review extends Model
     ];
 
 
+    public function eventProduct(){
+        return $this->belongsTo(EventProduct::class);
+    }
+
+    public function eventProductBranch(){
+        return $this->belongsTo(EventProductBranch::class);
+    }
+
+
 }
