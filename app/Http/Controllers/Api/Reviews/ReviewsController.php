@@ -35,4 +35,10 @@ class ReviewsController extends Controller
         return response()->json($ranking,200);
     }
 
+    public function getDetailRankingProduct($event_product_id):JsonResponse
+    {
+        $detailRanking = $this->reviewsService->getDetailRankingProduct($event_product_id);
+        return response()->json($detailRanking,200);
+    }
+
 }
