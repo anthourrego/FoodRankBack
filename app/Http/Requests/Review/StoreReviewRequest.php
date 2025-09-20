@@ -15,13 +15,13 @@ class StoreReviewRequest extends FormRequest
     {
         return [
             'event_product_id'        => 'required|exists:event_products,id',
-            'event_product_branch_id' => 'required|exists:event_product_branches,id',
+            'event_product_branch_id' => 'nullable|exists:event_product_branches,id',
             'rating'                  => 'required|integer|min:1|max:5',
             'comment'                 => 'nullable|string|max:255',
             'latitude'                => 'nullable|numeric',
             'longitude'               => 'nullable|numeric',
             'ip'                      => 'nullable|ip',
-            'mac'                     => 'nullable|string|max:17',
+            'deviceId'                => 'nullable|string|max:150',
             'fingerprint_device'      => 'nullable|string|max:3072',
             'is_active'               => 'nullable|boolean',
             'created_by'              => 'nullable|exists:users,id',

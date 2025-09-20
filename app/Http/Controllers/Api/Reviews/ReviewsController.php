@@ -29,4 +29,16 @@ class ReviewsController extends Controller
         return response()->json(['message' => 'Review not created'],400);
     }
 
+    public function getRanking($idEvent):JsonResponse
+    {
+        $ranking = $this->reviewsService->getRanking($idEvent);
+        return response()->json($ranking,200);
+    }
+
+    public function getDetailRankingProduct($event_product_id):JsonResponse
+    {
+        $detailRanking = $this->reviewsService->getDetailRankingProduct($event_product_id);
+        return response()->json($detailRanking,200);
+    }
+
 }

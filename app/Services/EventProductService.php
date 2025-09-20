@@ -24,7 +24,8 @@ class EventProductService
         $eventProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches.city', 'branchsProduct.branch'])
         ->where('is_active', '=', 1)
         ->where('event_id', '=', $idEvent)
-        ->where('product_id', '=', $idProduct)->get();
-        return $eventProducts;
+        ->where('product_id', '=', $idProduct);
+
+        return $eventProducts->get();
     }
 }

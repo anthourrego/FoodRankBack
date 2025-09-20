@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
-            $table->unique(['event_product_id', 'event_product_branch_id', 'ip', 'mac'], 'review_unique_constraint');
+            $table->unique(['event_product_id', 'event_product_branch_id', 'ip'], 'review_unique_constraint');
         });
 
     }
