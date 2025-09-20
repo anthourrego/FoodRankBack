@@ -5,10 +5,17 @@ use App\Http\Controllers\Api\EventProducts\EventProductsController;
 use App\Http\Controllers\Api\Reviews\ReviewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\AuthController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+});
+
+Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
+    Route::get('user', [AuthController::class, 'user']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+});
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events-products/find', [EventProductsController::class, 'findEventProduct']);
