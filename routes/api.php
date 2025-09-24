@@ -25,3 +25,7 @@ Route::get('/reviews/ranking/event/{idEvent}',[ReviewsController::class, 'getRan
 Route::get('/reviews/ranking/event-product/{event_product_id}',[ReviewsController::class, 'getDetailRankingProduct']);
 Route::get('/imageproduct/{product}', [EventProductsController::class, 'showImage']);
 Route::get('/imageproduct', [EventProductsController::class, 'showImage']);
+
+
+Route::prefix('configurations')->group(base_path('src/admin/Configuration/Infrastructure/Routes/api.php'));
+
