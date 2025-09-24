@@ -27,7 +27,7 @@ class StoreResturant extends FormRequest
 
     public function rules(): array
     {
-        $restaurantId = $this->route('restaurant')?->id;
+        $restaurantId = $this->route('restaurant');
         return [
             'name' => ['required','string','min:3','max:255',Rule::unique('restaurants')->ignore($restaurantId)],
             'description' => 'nullable|string|max:1000',

@@ -38,6 +38,13 @@ class RestaurantController extends Controller
         try {
             $data = $request->validated();
 
+            $existeName = Restaurant::where('name', $data['name'])->first();
+            if ($existeName) {
+                return response()->json([
+                    'message' => 'El nombre ya esta almacenado',
+                ], 500);
+            }
+
             $restaurant = $this->restaurantService->create($data);
 
             return response()->json([
@@ -58,6 +65,13 @@ class RestaurantController extends Controller
         try {
             $data = $request->validated();
 
+            $existeName = Restaurant::where('name', $data['name'])->first();
+            if ($existeName) {
+                return response()->json([
+                    'message' => 'El nombre ya esta almacenado',
+                ], 500);
+            }
+
             $restaurant = $this->restaurantService->update($data, $id);
             
             return response()->json([
@@ -76,7 +90,7 @@ class RestaurantController extends Controller
     public function destroy(Restaurant $restaurant): JsonResponse
     {
         try {
-            $this->restaurantService->delete($id);
+            $this->restaurantService->delete($restaurant->id);
             
             return response()->json([
                 'message' => 'Restaurant deleted successfully'

@@ -39,7 +39,7 @@ class RestaurantService
     $sortOrder = $request->get('sort_order', 'desc');
     $query->orderBy($sortBy, $sortOrder);
 
-    $perPage = $request->get('per_page', 15);
+    $perPage = $request->get('per_page', 3);
     $restaurants = $query->paginate($perPage);
 
     return $restaurants;
@@ -64,7 +64,8 @@ class RestaurantService
   {
     $data['updated_by'] = Auth::id();
 
-    Restaurant::find($id)->update($data);
+    $restaurant = Restaurant::find($id);
+    $restaurant->update($data);
     $restaurant->load(['city', 'createdBy', 'updatedBy']);
     return $restaurant;
   }
