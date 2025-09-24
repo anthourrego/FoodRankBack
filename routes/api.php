@@ -6,15 +6,25 @@ use App\Http\Controllers\Api\Reviews\ReviewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Restaurant\RestaurantController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
 });
 
-Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
-    Route::get('user', [AuthController::class, 'user']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::prefix('auth')->group(function () {
+        Route::get('user', [AuthController::class, 'user']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+    });
+
+    Route::get('cities', [RestaurantController::class, 'getCities']);
+
+    // Restaurant
+    Route::apiResource('restaurants', RestaurantController::class);
+    Route::patch('restaurants/{id}/toggle-status', [RestaurantController::class, 'toggleStatus']);
 });
 
 Route::get('/events', [EventController::class, 'index']);
