@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Restaurant\RestaurantController;
+use App\Http\Controllers\Api\RestaurantBranch\RestaurantBranchController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -25,6 +26,21 @@ Route::middleware('auth:sanctum')->group(function () {
     // Restaurant
     Route::apiResource('restaurants', RestaurantController::class);
     Route::patch('restaurants/{id}/toggle-status', [RestaurantController::class, 'toggleStatus']);
+
+    Route::prefix('restaurant-branches')->group(function () {
+        Route::get('/', [RestaurantBranchController::class, 'index']);
+        Route::post('/', [RestaurantBranchController::class, 'store']);
+        Route::get('/{id}', [RestaurantBranchController::class, 'show']);
+        Route::put('/{id}', [RestaurantBranchController::class, 'update']);
+        Route::delete('/{id}', [RestaurantBranchController::class, 'destroy']);
+        
+        Route::patch('/{id}/toggle-status', [RestaurantBranchController::class, 'toggleStatus']);
+        
+        Route::get('/restaurant/{restaurantId}', [RestaurantBranchController::class, 'getByRestaurant']);
+        Route::get('/city/{cityId}', [RestaurantBranchController::class, 'getByCity']);
+        
+        Route::get('/stats/restaurant/{restaurantId}', [RestaurantBranchController::class, 'getStatsByRestaurant']);
+    });
 });
 
 Route::get('/events', [EventController::class, 'index']);
