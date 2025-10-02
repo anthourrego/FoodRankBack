@@ -23,13 +23,66 @@ class StoreConfigurationRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'key' => 'required|string|max:255',
-            'value' => 'required|string',
             'type' => 'required|string|max:255|in:text,textarea,image,boolean,number,banner',
             'description' => 'required|string|max:255',
         ];
+
+        // Si el tipo es image, validar archivo en imageFile
+        if ($this->input('type') === 'image') {
+            $rules['imageFile'] = 'required|file|mimes:jpeg,jpg,png,webp,avif|max:5120'; // Incluir avif
+            $rules['value'] = 'nullable|string'; // value es opcional para imágenes
+        } else {
+            $rules['value'] = 'required|string';
+        }
+
+        return $rules;
     }
 
-   
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->input('type') === 'image' && $this->hasFile('imageFile')) {
+                $file = $this->file('imageFile');
+                $extension = strtolower($file->getClientOriginalExtension());
+                $mimeType = $file->getMimeType();
+                
+                // Debug: Log para ver qué está recibiendo
+                \Log::info('Archivo recibido:', [
+                    'nombre' => $file->getClientOriginalName(),
+                    'extension' => $extension,
+                    'mime_type' => $mimeType,
+                    'size' => $file->getSize(),
+                    'is_valid' => $file->isValid(),
+                    'error' => $file->getError()
+                ]);
+                
+                // Validación manual adicional
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+                
+                if (!in_array($extension, $allowedExtensions) && !in_array($mimeType, $allowedMimeTypes)) {
+                    $validator->errors()->add('imageFile', "Tipo de archivo no permitido. Extensión: {$extension}, MIME: {$mimeType}");
+                }
+            }
+        });
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'value.required' => 'El valor es requerido',
+            'imageFile.required' => 'La imagen es requerida cuando el tipo es image',
+            'imageFile.file' => 'El campo imageFile debe ser un archivo',
+            'imageFile.mimes' => 'El archivo debe ser de tipo: jpeg, jpg, png, webp, avif',
+            'imageFile.max' => 'El archivo no debe ser mayor a 5MB',
+        ];
+    }
 }
