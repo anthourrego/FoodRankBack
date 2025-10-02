@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\RestaurantBranch;
 
 use App\Http\Controllers\Controller;
 use App\Services\RestaurantBranchService;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\RestaurantBranch\StoreResturantBranch;
+use App\Http\Requests\RestaurantBranch\StoreRestaurantBranch;
 
 class RestaurantBranchController extends Controller
 {
@@ -51,11 +51,10 @@ class RestaurantBranchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreResturantBranch $request): JsonResponse
+    public function store(StoreRestaurantBranch $request): JsonResponse
     {
         try {
-            // Verificar duplicados (opcional)
-            $data = $validator->validated();
+            $data = $request->validated();
             if ($this->branchService->checkDuplicateBranch($data['restaurant_id'], $data['address'])) {
                 return response()->json([
                     'message' => 'Ya existe una sucursal con esta dirección para este restaurante',
@@ -95,11 +94,10 @@ class RestaurantBranchController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreResturantBranch $request, string $id): JsonResponse
+    public function update(StoreRestaurantBranch $request, string $id): JsonResponse
     {
         try {
-            // Verificar duplicados excluyendo el registro actual (opcional)
-            $data = $validator->validated();
+            $data = $request->validated();
             if ($this->branchService->checkDuplicateBranch($data['restaurant_id'], $data['address'], $id)) {
                 return response()->json([
                     'message' => 'Ya existe una sucursal con esta dirección para este restaurante',

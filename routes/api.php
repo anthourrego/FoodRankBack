@@ -36,9 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
         
         Route::patch('/{id}/toggle-status', [RestaurantBranchController::class, 'toggleStatus']);
         
-        Route::get('/restaurant/{restaurantId}', [RestaurantBranchController::class, 'getByRestaurant']);
-        Route::get('/city/{cityId}', [RestaurantBranchController::class, 'getByCity']);
-        
         Route::get('/stats/restaurant/{restaurantId}', [RestaurantBranchController::class, 'getStatsByRestaurant']);
     });
 });

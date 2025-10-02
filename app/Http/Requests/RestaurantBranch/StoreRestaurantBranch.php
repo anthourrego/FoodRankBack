@@ -5,7 +5,7 @@ namespace App\Http\Requests\RestaurantBranch;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreResturant extends FormRequest
+class StoreRestaurantBranch extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,7 +19,6 @@ class StoreResturant extends FormRequest
             'phone' => $this->input('phone') ?? "",
             'latitude' => $this->input('latitude') ?? "",
             'longitude' => $this->input('longitude') ?? null,
-            'is_active' => $this->input('is_active') ?? true,
             'city_id' => $this->input('city_id') ?? null,
             'restaurant_id' => $this->input('restaurant_id') ?? null,
         ]);
@@ -31,10 +30,9 @@ class StoreResturant extends FormRequest
         return [
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:30|regex:/^[\d\s\+\-\(\)]+$/',
-            'latitude' => 'nullable|string|max:100',
-            'longitude' => 'nullable|string|max:100',
-            'is_active' => 'boolean',
-            'city_id' => 'required|exists:cities,id'
+            'latitude' => 'nullable|integer|max:100',
+            'longitude' => 'nullable|integer|max:100',
+            'city_id' => 'required|exists:cities,id',
             'restaurant_id' => 'required|exists:restaurants,id'
         ];
     }
