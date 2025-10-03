@@ -8,7 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('configurations', function (Blueprint $table) {
+        if (!Schema::hasTable('configurations')) {
+            Schema::create('configurations', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique();
             $table->text('value');
@@ -19,6 +20,7 @@ return new class extends Migration
             
             $table->index('type');
         });
+        }
     }
 
     public function down(): void
