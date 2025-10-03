@@ -55,11 +55,6 @@ class RestaurantBranchController extends Controller
     {
         try {
             $data = $request->validated();
-            if ($this->branchService->checkDuplicateBranch($data['restaurant_id'], $data['address'])) {
-                return response()->json([
-                    'message' => 'Ya existe una sucursal con esta dirección para este restaurante',
-                ], 422);
-            }
 
             $branch = $this->branchService->createBranch($data, Auth::id());
 
@@ -98,11 +93,6 @@ class RestaurantBranchController extends Controller
     {
         try {
             $data = $request->validated();
-            if ($this->branchService->checkDuplicateBranch($data['restaurant_id'], $data['address'], $id)) {
-                return response()->json([
-                    'message' => 'Ya existe una sucursal con esta dirección para este restaurante',
-                ], 422);
-            }
 
             $branch = $this->branchService->updateBranch($id, $data, Auth::id());
 

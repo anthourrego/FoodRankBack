@@ -30,8 +30,8 @@ class StoreRestaurantBranch extends FormRequest
         return [
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:30|regex:/^[\d\s\+\-\(\)]+$/',
-            'latitude' => 'nullable|integer|max:100',
-            'longitude' => 'nullable|integer|max:100',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'city_id' => 'required|exists:cities,id',
             'restaurant_id' => 'required|exists:restaurants,id'
         ];

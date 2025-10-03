@@ -13,7 +13,7 @@ class RestaurantBranchService
     /**
      * Obtener sucursales con filtros y paginación
      */
-    public function getAllBranches(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function getAllBranches(array $filters = [], int $perPage = 3): LengthAwarePaginator
     {
         $query = RestaurantBranch::with(['city', 'restaurant', 'createdBy', 'updatedBy']);
 
@@ -212,21 +212,6 @@ class RestaurantBranchService
         }
 
         return $query->orderBy('address')->get();
-    }
-
-    /**
-     * Verificar si existe una sucursal duplicada
-     */
-    public function checkDuplicateBranch(int $restaurantId, string $address, ?int $excludeId = null): bool
-    {
-        $query = RestaurantBranch::where('restaurant_id', $restaurantId)
-            ->where('address', 'like', $address);
-
-        if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        }
-
-        return $query->exists();
     }
 
     /**
