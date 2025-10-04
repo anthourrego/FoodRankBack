@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Restaurant\RestaurantController;
 use App\Http\Controllers\Api\RestaurantBranch\RestaurantBranchController;
+use App\Http\Controllers\Api\RestaurantProducts\RestaurantProductController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -38,6 +39,16 @@ Route::middleware('auth:sanctum')->group(function () {
         
         Route::get('/stats/restaurant/{restaurantId}', [RestaurantBranchController::class, 'getStatsByRestaurant']);
     });
+
+    // Restaurant Products
+    Route::prefix('products-restaurant')->group(function () {
+        Route::get('/', [RestaurantProductController::class, 'index']);
+        Route::get('/restaurants', [RestaurantProductController::class, 'getRestaurants']);
+        Route::post('/', [RestaurantProductController::class, 'store']);
+        Route::put('/{product}', [RestaurantProductController::class, 'update']);
+        Route::delete('/{product}', [RestaurantProductController::class, 'destroy']);
+        Route::patch('/{id}/toggle-status', [RestaurantProductController::class, 'toggleStatus']);
+    });
 });
 
 Route::get('/events', [EventController::class, 'index']);
@@ -51,4 +62,3 @@ Route::get('/imageproduct', [EventProductsController::class, 'showImage']);
 
 
 Route::prefix('configurations')->group(base_path('src/admin/Configuration/Infrastructure/Routes/api.php'));
-
