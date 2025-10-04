@@ -10,7 +10,7 @@ use src\admin\Configuration\Infrastructure\Resources\ConfigurationResource;
 
 class EloquentConfigurationRepository implements ConfigurationRepositoryInterface
 {
-    public function save(Configuration $configuration): Configuration
+    public function save(Configuration $configuration): ConfigurationResource
     {
         $configurationSaved = ConfigurationModel::create([
             'key' => $configuration->getKey(),
@@ -19,38 +19,56 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
             'description' => $configuration->getDescription(),
         ]);
         
-        return $this->mapToEntity($configurationSaved);
-    }
+        if($configurationSaved){
+            return new ConfigurationResource($configurationSaved);
+        }
 
-    public function findById(int $id): ?Configuration
-    {
-        $model = ConfigurationModel::find($id);
+        return null;
         
-        return $model ? $this->mapToEntity($model) : null;
     }
 
-    public function findByKey(string $key): ?Configuration
+    public function findById(int $id): ?ConfigurationResource
+    {
+        $foundConfig = ConfigurationModel::find($id);
+
+        if($foundConfig){
+            return new ConfigurationResource($foundConfig);
+        }
+        
+        return $foundConfig;
+    }
+
+    public function findByKey(string $key): ?ConfigurationResource
     {
         $model = ConfigurationModel::where('key', $key)->first();
+
+        if($foundConfig){
+            return new ConfigurationResource($foundConfig);
+        }
         
-        return $model ? $this->mapToEntity($model) : null;
+        return $foundConfig;
     }
 
-    public function findAll(): array
+    public function findAll(): ?array
     {
-        $models = ConfigurationModel::orderBy('key')->get();
-        $configurations = ConfigurationResource::collection($models)->all();
-        
-        return $configurations;
+        $foundConfigurations = ConfigurationModel::orderBy('key')->get();
+        if($foundConfigurations){
+
+            return ConfigurationResource::collection($foundConfigurations)->all();
+        }
+        return $foundConfigurations;
     }
 
-    public function findByType(string $type): array
+    public function findByType(string $type): ?array
     {
-        $models = ConfigurationModel::where('type', $type)
+        $configFound = ConfigurationModel::where('type', $type)
             ->orderBy('key')
             ->get();
         
-        return $models;
+        if($configFound){
+            return ConfigurationResource::collection($configFound)->all();
+        }
+        return $configFound;
     }
 
     public function delete(int $id): bool
@@ -72,19 +90,6 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
         return $model->save();
     }
 
-    private function mapToEntity(ConfigurationModel $model): Configuration
-    {
-        return new Configuration(
-            id: $model->id,
-            key: $model->key,
-            value: $model->value,
-            type: new ConfigurationType($model->type),
-            description: $model->description,
-            isActive: $model->is_active,
-            createdAt: $model->created_at ? new \DateTime($model->created_at) : null,
-            updatedAt: $model->updated_at ? new \DateTime($model->updated_at) : null,
-        );
-    }
 
     
 
