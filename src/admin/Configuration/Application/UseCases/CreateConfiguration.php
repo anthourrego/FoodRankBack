@@ -40,6 +40,11 @@ class CreateConfiguration
             createdAt: new \DateTime()
         );
 
+        $existeConfigurationOrEvent = $this->configurationRepository->findByKey($request->key);
+        if($existeConfigurationOrEvent){
+            throw new \Exception('Configuración o evento ya existe');
+        }
+
         return $this->configurationRepository->save($configuration);
     }
 }

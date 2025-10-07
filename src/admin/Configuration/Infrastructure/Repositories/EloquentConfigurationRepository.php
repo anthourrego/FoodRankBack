@@ -5,7 +5,6 @@ namespace src\admin\Configuration\Infrastructure\Repositories;
 use App\Models\Configuration as ConfigurationModel;
 use src\admin\Configuration\Domain\Entities\Configuration;
 use src\admin\Configuration\Domain\Contracts\ConfigurationRepositoryInterface;
-use src\admin\Configuration\Domain\ValueObjects\ConfigurationType;
 use src\admin\Configuration\Infrastructure\Resources\ConfigurationResource;
 
 class EloquentConfigurationRepository implements ConfigurationRepositoryInterface
@@ -23,7 +22,7 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
             return new ConfigurationResource($configurationSaved);
         }
 
-        return null;
+        return $configurationSaved;
         
     }
 
@@ -40,7 +39,7 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
 
     public function findByKey(string $key): ?ConfigurationResource
     {
-        $model = ConfigurationModel::where('key', $key)->first();
+        $foundConfig = ConfigurationModel::where('key', $key)->first();
 
         if($foundConfig){
             return new ConfigurationResource($foundConfig);

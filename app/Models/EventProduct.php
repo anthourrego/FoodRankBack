@@ -21,4 +21,8 @@ class EventProduct extends Model
     public function branchsProduct(){
         return $this->hasMany(EventProductBranch::class);
     }
+
+    public function event(){
+        return $this->belongsTo(Event::class);
+    }
 }

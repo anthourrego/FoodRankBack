@@ -49,7 +49,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{product}', [RestaurantProductController::class, 'destroy']);
         Route::patch('/{id}/toggle-status', [RestaurantProductController::class, 'toggleStatus']);
     });
+
 });
+Route::prefix('eventss')->group(base_path('src/admin/Events/Infrastructure/Routes/api.php'));
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events-products/find', [EventProductsController::class, 'findEventProduct']);
@@ -62,3 +64,5 @@ Route::get('/imageproduct', [EventProductsController::class, 'showImage']);
 
 
 Route::prefix('configurations')->group(base_path('src/admin/Configuration/Infrastructure/Routes/api.php'));
+
+

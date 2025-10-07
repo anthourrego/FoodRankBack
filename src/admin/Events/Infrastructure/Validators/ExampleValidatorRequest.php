@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\admin\Intro\Infrastructure\Validators;
+namespace Src\admin\Events\Infrastructure\Validators;
 
 use Illuminate\Foundation\Http\FormRequest;
 
