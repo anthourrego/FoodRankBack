@@ -21,6 +21,11 @@ class Event extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+
     /**
      * Get the branch where the event takes place.
      */
