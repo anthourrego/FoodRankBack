@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\City;
 use Illuminate\Support\Facades\Auth;
+use App\Models\RestaurantProduct;
+use App\Models\RestaurantBranch;
 
 use function Illuminate\Log\log;
 
@@ -72,6 +74,16 @@ class RestaurantService
 
   public function delete($id)
   {
+    $products = RestaurantProduct::where("restaurant_id", $id)->count();
+    if ($products > 0) {
+      throw new \Exception("El restaurante tiene productos registrados");
+    }
+
+    $branchs = RestaurantBranch::where("restaurant_id", $id)->count();
+    if ($branchs > 0) {
+      throw new \Exception("El restaurante tiene sucursales registradas");
+    }
+
     Restaurant::find($id)->delete();
   }
 
