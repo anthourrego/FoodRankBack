@@ -19,4 +19,6 @@ interface ConfigurationRepositoryInterface
     public function delete(int $id): bool;
     
     public function updateValue(string $key, string $value): bool;
+
+    public function findByEventId(int $eventId): ?array;
 }

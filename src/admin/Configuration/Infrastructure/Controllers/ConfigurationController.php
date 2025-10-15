@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use src\admin\Configuration\Application\UseCases\CreateConfiguration;
 use src\admin\Configuration\Application\UseCases\GetConfigurations;
+use src\admin\Configuration\Application\UseCases\ShowConfiguration;
 use src\admin\Configuration\Infrastructure\Validators\StoreConfigurationRequest;
 use src\admin\Configuration\Infrastructure\Repositories\EloquentConfigurationRepository;
 
@@ -43,28 +44,21 @@ class ConfigurationController
         }
     }
 
-    public function show(string $key): JsonResponse
+    public function show(string $eventId): JsonResponse
     {
-        /* try {
-            $configuration = $this->getConfigurationsUseCase->getByKey($key);
-            
+        try {
+            $configuration = new ShowConfiguration($this->configurationRepository);
+            $configuration = $configuration->execute((int)$eventId);
             if (!$configuration) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Configuración no encontrada'
-                ], 404);
+                return $this->errorResponse('Configuración no encontrada', 404);
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $configuration
-            ]);
+           return $this->successResponse('Configuración obtenida exitosamente', $configuration);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        } */
+            $message = $e->getMessage() ?? 'Error al obtener la configuración';
+            return $this->errorResponse($message, 500);
+
+        } 
     }
 
     public function update(Request $request, string $key): JsonResponse

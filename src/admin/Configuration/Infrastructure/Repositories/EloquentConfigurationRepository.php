@@ -100,6 +100,18 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
         return $model->save();
     }
 
+    public function findByEventId(int $eventId): ?array
+    {
+        $configFound = ConfigurationModel::where('event_id', $eventId)
+            ->orderBy('key')
+            ->get();
+            
+        if($configFound){
+            return ConfigurationResource::collection($configFound)->all();
+        }
+        return $configFound;
+    }
+
 
     
 
