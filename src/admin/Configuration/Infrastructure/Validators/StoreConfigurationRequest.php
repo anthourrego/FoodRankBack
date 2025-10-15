@@ -27,6 +27,7 @@ class StoreConfigurationRequest extends FormRequest
             'key' => 'required|string|max:255',
             'type' => 'required|string|max:255|in:text,textarea,image,boolean,number,banner',
             'description' => 'required|string|max:255',
+            'eventId' => 'required|exists:events,id',
         ];
 
         // Si el tipo es image, validar archivo en imageFile

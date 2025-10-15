@@ -19,6 +19,7 @@ class ConfigurationResource extends JsonResource
             'key' => $this->key,
             'value' => $this->value,
             'type' => $this->type,
+            'eventId' => $this->event_id,
             'description' => $this->description,
             'isActive' => $this->is_active,
             'createdAt' => $this->created_at?->format(DATE_ATOM),

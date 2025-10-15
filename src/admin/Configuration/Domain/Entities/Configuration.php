@@ -10,6 +10,7 @@ class Configuration
         private ?int $id,
         private string $key,
         private string $value,
+        private ?int $eventId,
         private ConfigurationType $type,
         private string $description,
         private ?bool $isActive = true,
@@ -55,6 +56,11 @@ class Configuration
     public function getIsActive(): bool
     {
         return $this->isActive;
+    }
+
+    public function getEventId(): ?int
+    {
+        return $this->eventId;
     }
 
   

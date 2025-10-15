@@ -16,7 +16,8 @@ class Configuration extends Model
         'value',
         'type',
         'description',
-        'is_active'
+        'is_active',
+        'event_id'
     ];
 
     protected $casts = [

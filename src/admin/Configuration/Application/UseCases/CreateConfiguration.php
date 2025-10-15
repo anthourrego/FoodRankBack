@@ -2,6 +2,7 @@
 
 namespace src\admin\Configuration\Application\UseCases;
 
+use Illuminate\Support\Facades\Log;
 use src\admin\Configuration\Domain\Entities\Configuration;
 use src\admin\Configuration\Domain\Contracts\ConfigurationRepositoryInterface;
 use src\admin\Configuration\Domain\ValueObjects\ConfigurationType;
@@ -35,15 +36,11 @@ class CreateConfiguration
             id: null,
             key: $request->key,
             value: $value,
+            eventId: $request->eventId,
             type: new ConfigurationType($request->type),
             description: $request->description,
-            createdAt: new \DateTime()
+            createdAt: new \DateTime(),
         );
-
-        $existeConfigurationOrEvent = $this->configurationRepository->findByKey($request->key);
-        if($existeConfigurationOrEvent){
-            throw new \Exception('Configuración o evento ya existe');
-        }
 
         return $this->configurationRepository->save($configuration);
     }

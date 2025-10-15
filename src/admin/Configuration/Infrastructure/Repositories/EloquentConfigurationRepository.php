@@ -11,18 +11,29 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
 {
     public function save(Configuration $configuration): ConfigurationResource
     {
-        $configurationSaved = ConfigurationModel::create([
-            'key' => $configuration->getKey(),
-            'value' => $configuration->getValue(),
-            'type' => $configuration->getType()->getValue(),
-            'description' => $configuration->getDescription(),
-        ]);
-        
-        if($configurationSaved){
-            return new ConfigurationResource($configurationSaved);
-        }
+        //buscar si el evento ya tiene una configuracion con el mismo key
+        $eventHasEqualsKey = ConfigurationModel::where('event_id', $configuration->getEventId())
+        ->where('key', $configuration->getKey())
+        ->first();
 
-        return $configurationSaved;
+        $configurationSaved = null;
+        if($eventHasEqualsKey){
+           //actualizar el valor de la configuracion
+           $eventHasEqualsKey->update([
+            'value' => $configuration->getValue(),
+           ]);
+           $configurationSaved = $eventHasEqualsKey;
+        }else{
+            $configurationSaved = ConfigurationModel::create([
+                'key' => $configuration->getKey(),
+                'value' => $configuration->getValue(),
+                'type' => $configuration->getType()->getValue(),
+                'description' => $configuration->getDescription(),
+                'event_id' => $configuration->getEventId(),
+            ]);
+        }
+        
+        return new ConfigurationResource($configurationSaved);
         
     }
 
@@ -34,7 +45,7 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
             return new ConfigurationResource($foundConfig);
         }
         
-        return $foundConfig;
+        return null;
     }
 
     public function findByKey(string $key): ?ConfigurationResource

@@ -2,8 +2,10 @@
 
 namespace src\admin\Configuration\Infrastructure\Controllers;
 
+use App\Http\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use src\admin\Configuration\Application\UseCases\CreateConfiguration;
 use src\admin\Configuration\Application\UseCases\GetConfigurations;
@@ -12,6 +14,7 @@ use src\admin\Configuration\Infrastructure\Repositories\EloquentConfigurationRep
 
 class ConfigurationController
 {
+    use ApiResponseTrait;
     public function __construct(
         private EloquentConfigurationRepository $configurationRepository
 
@@ -93,32 +96,25 @@ class ConfigurationController
 
     public function store(StoreConfigurationRequest $request)
     {
-        $response = (object) [
-            'message' => '',
-            'data' => [],
-            'success' => false,
-        ];
-        
+       
         
         
         try {
             $createConfiguration = new CreateConfiguration($this->configurationRepository);
             $newConfiguration = $createConfiguration->execute($request);
-            $response->data = $newConfiguration;
-            $response->success = true;
-            $response->message = 'Configuración creada exitosamente';
-
+          
+            
+            return $this->successResponse('Configuración creada exitosamente', $newConfiguration, Response::HTTP_CREATED);
         }catch(\Exception $e){
-            $response->message = 'Error al crear la configuración';
-            $response->success = false;
+            $message =  $e->getMessage() ?? 'Error al crear la configuración';
             Log::error([
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
                 'trace' => $e->getTraceAsString(),
             ]);
+            return $this->errorResponse($message );
         }
-
-        return response()->json($response);
+        
     }
 }
