@@ -51,5 +51,15 @@ class Events
         return $this->isActive;
     }
 
+    public function getUpdatedById(): int
+    {
+        return $this->updatedBy;
+    }
+
+    public function getCreatedById(): int
+    {
+        return $this->createdBy;
+    }
+
     
 }

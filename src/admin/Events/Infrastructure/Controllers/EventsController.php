@@ -8,10 +8,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use src\admin\Events\Application\useCases\GetEventActive;
+use src\admin\Events\Application\useCases\GetEvents;
 use src\admin\Events\Application\useCases\GetProductsEvent;
 use src\admin\Events\Application\useCases\StoreEvent;
+use src\admin\Events\Application\useCases\UpdateEvent;
 use src\admin\Events\Infrastructure\Repositories\EloquentEventsRepository;
 use src\admin\Events\Infrastructure\Validators\StoreEventRequest;
+use src\admin\Events\Infrastructure\Validators\UpdateEventRequest;
 use Throwable;
 
 final class EventsController extends Controller { 
@@ -113,4 +116,32 @@ final class EventsController extends Controller {
         }
     }
 
+    public function update(UpdateEventRequest $request, $id){
+        try{
+            $updateEvent = new UpdateEvent($this->eventsRepository);
+            $eventResult = $updateEvent->execute($request->validated(), $id);
+            if($eventResult['success']){
+                return $this->successResponse($eventResult['message'],$eventResult['data']);
+            }else{
+                return $this->errorResponse($eventResult['message'],$eventResult['data'],$eventResult['status']);
+            }
+        }catch(Throwable $th){
+            Log::error('Error en update event:', ['error' => $th->getMessage()]);
+            return $this->errorResponse($th->getMessage() || 'Se presento un error al actualizar el evento',[],500);
+        }
+    }
+
+    public function index(){
+        try{
+            $events = new GetEvents($this->eventsRepository);
+            [$eventsFound, $error, $message] = $events->execute();
+            if($error){
+                return $this->errorResponse($message);
+            }
+            return $this->successResponse($message, $eventsFound);
+        }catch(Throwable $th){
+            Log::error('Error en index event:', ['error' => $th->getMessage(),'file' => $th->getFile(),'line' => $th->getLine()]);
+            return $this->errorResponse($th->getMessage() || 'Se presento un error al obtener los eventos',[],500);
+        }
+    }   
 }

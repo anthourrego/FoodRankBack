@@ -6,6 +6,7 @@ use src\admin\Events\Domain\Contracts\EventsRepositoryInterface;
 use src\admin\Events\Domain\Entities\Events;
 use App\Models\Event;
 use App\Models\EventProduct;
+use Illuminate\Support\Facades\Log;
 
 class EloquentEventsRepository implements EventsRepositoryInterface
 {
@@ -61,5 +62,54 @@ class EloquentEventsRepository implements EventsRepositoryInterface
         return $foundProducts;
     }
 
+    public function getEventById(int $id): ?Events
+    {
+        $foundEvent = Event::with(['city'])->where('id', '=', $id)->first();
+        if($foundEvent){
+            return new Events(
+                $foundEvent->id,
+                $foundEvent->name,
+                $foundEvent->description,
+                $foundEvent->start_date,
+                $foundEvent->end_date,
+                $foundEvent->city_id,
+                $foundEvent->is_active,
+                $foundEvent->created_by,
+                $foundEvent->updated_by
+            );
+        }
+        Log::debug('Evento no encontrado', ['id' => $id]);
+        Log::debug('Evento encontrado', ['foundEvent' => $foundEvent]);
+        return null;
+    }
 
+    public function update(Events $event): array
+    {   
+        try {
+            $updated = Event::where('id', '=', $event->getId())->update([
+                'name' => $event->getName(),
+                'description' => $event->getDescription(),
+                'start_date' => $event->getStartDate(),
+                'end_date' => $event->getEndDate(),
+                'city_id' => $event->getCityId(),
+                'is_active' => $event->getIsActive(),
+                'updated_by' => $event->getUpdatedById(),
+            ]);
+            
+            if($updated){
+                return [$event,false,  'Evento actualizado correctamente'];
+            }
+            return [null,true, 'No se pudo actualizar el evento'];
+        } catch (\Throwable $th) {
+            return [null,true,  $th->getMessage()];
+        }
+       
+    }
+
+    public function getAll(): array
+    {
+        $foundEvents = Event::with(['city'])->get()->toArray();
+       
+        return $foundEvents;
+    }
 }
