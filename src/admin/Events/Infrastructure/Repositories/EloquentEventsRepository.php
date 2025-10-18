@@ -11,12 +11,36 @@ class EloquentEventsRepository implements EventsRepositoryInterface
 {
     public function create(Events $event): Events
     {
-        return Event::create($event);
+        $eventData = [
+            'name' => $event->getName(),
+            'description' => $event->getDescription(),
+            'start_date' => $event->getStartDate(),
+            'end_date' => $event->getEndDate(),
+            'city_id' => $event->getCityId(),
+            'is_active' => $event->getIsActive(),
+            'created_by' => $event->createdBy,
+            'updated_by' => $event->updatedBy,
+        ];
+
+        $createdEvent = Event::create($eventData);
+        
+        // Convertir el modelo Eloquent de vuelta a la entidad Events
+        return new Events(
+            $createdEvent->id,
+            $createdEvent->name,
+            $createdEvent->description,
+            $createdEvent->start_date,
+            $createdEvent->end_date,
+            $createdEvent->city_id,
+            $createdEvent->is_active,
+            $createdEvent->created_by,
+            $createdEvent->updated_by
+        );
     }
 
     public function getEventsActive(): array
     {
-        $foundEvents = Event::with(['city','eventProducts'])->where('is_active', '=', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->get()->toArray();
+        $foundEvents = Event::with(['city'])->where('is_active', '=', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->get()->toArray();
         if($foundEvents){
             return $foundEvents;
         }

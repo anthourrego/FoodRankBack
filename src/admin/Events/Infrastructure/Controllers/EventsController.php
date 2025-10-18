@@ -3,14 +3,19 @@
 namespace src\admin\Events\Infrastructure\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\ApiResponseTrait;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use src\admin\Events\Application\useCases\GetEventActive;
 use src\admin\Events\Application\useCases\GetProductsEvent;
+use src\admin\Events\Application\useCases\StoreEvent;
 use src\admin\Events\Infrastructure\Repositories\EloquentEventsRepository;
+use src\admin\Events\Infrastructure\Validators\StoreEventRequest;
+use Throwable;
 
 final class EventsController extends Controller { 
-
+    use ApiResponseTrait;
     public function __construct(private EloquentEventsRepository $eventsRepository)
     {
         $this->eventsRepository = $eventsRepository;
@@ -84,6 +89,28 @@ final class EventsController extends Controller {
             return response()->json($response,$response->status);
         }
         
+    }
+
+    public function store(StoreEventRequest $request){
+        try{
+            
+            
+            
+            $storeEvent = new StoreEvent($this->eventsRepository);
+            $eventResult = $storeEvent->execute($request->validated());
+            if($eventResult['success']){
+                return $this->successResponse($eventResult['message'],$eventResult['data']);
+            }else{
+                return $this->errorResponse($eventResult['message']);
+            }
+            
+        }catch(Throwable $th){
+            Log::error('Error en store event:', ['error' => $th->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage() || 'Se presento un error almacenado el evento',
+            ], 500);
+        }
     }
 
 }

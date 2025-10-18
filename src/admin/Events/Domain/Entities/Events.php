@@ -5,7 +5,7 @@ namespace src\admin\Events\Domain\Entities;
 class Events
 {
     public function __construct(
-        public int $id,
+        public ?int $id,
         public string $name,
         public string $description,
         public string $startDate,
@@ -13,7 +13,7 @@ class Events
         public int $cityId,
         public bool $isActive,
         public int $createdBy,
-        public int $updatedBy,
+        public ?int $updatedBy,
     ) {}
 
     public function getId(): int
