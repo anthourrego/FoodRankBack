@@ -19,8 +19,8 @@ class EloquentEventsRepository implements EventsRepositoryInterface
             'end_date' => $event->getEndDate(),
             'city_id' => $event->getCityId(),
             'is_active' => $event->getIsActive(),
-            'created_by' => $event->createdBy,
-            'updated_by' => $event->updatedBy,
+            'created_by' => $event->getCreatedById(),
+            'updated_by' => $event->getUpdatedById(),
         ];
 
         $createdEvent = Event::create($eventData);
@@ -66,6 +66,7 @@ class EloquentEventsRepository implements EventsRepositoryInterface
     {
         $foundEvent = Event::with(['city'])->where('id', '=', $id)->first();
         if($foundEvent){
+            
             return new Events(
                 $foundEvent->id,
                 $foundEvent->name,
@@ -78,8 +79,6 @@ class EloquentEventsRepository implements EventsRepositoryInterface
                 $foundEvent->updated_by
             );
         }
-        Log::debug('Evento no encontrado', ['id' => $id]);
-        Log::debug('Evento encontrado', ['foundEvent' => $foundEvent]);
         return null;
     }
 

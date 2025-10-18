@@ -33,6 +33,7 @@ class UpdateEvent
                 $result['status'] = 404;
                 return $result;
             }
+            
             $event = new Events(
                 $foundEvent->id,
                 $data['name'],
@@ -46,9 +47,6 @@ class UpdateEvent
             );
         
             [$storedEvent, $error, $message] = $this->eventsRepository->update($event);
-            Log::debug('storedEvent', ['storedEvent' => $storedEvent]);
-            Log::debug('error', ['error' => $error]);
-            Log::debug('message', ['message' => $message]);
             if ($storedEvent) {
                 $result['data'] = $storedEvent;
                 $result['success'] = true;
