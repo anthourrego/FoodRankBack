@@ -13,6 +13,9 @@ interface EventsRepositoryInterface
 
     public function update(Events $event): array;
     public function getAll(): array;
+    public function createProductEvent(int $eventId, int $productId): array;
+    public function deleteProductEvent(int $eventId, int $productId): array;
+    public function assignBranchesProductEvent(int $eventId, int $productId, array $branchIds): array;
   /*   public function update(Event $event): Event;
     public function delete(Event $event): bool;
     public function findById(int $id): Event;

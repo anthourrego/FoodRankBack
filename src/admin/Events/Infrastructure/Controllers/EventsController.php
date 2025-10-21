@@ -7,13 +7,18 @@ use App\Http\Traits\ApiResponseTrait;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use src\admin\Events\Application\useCases\AssignBranches;
+use src\admin\Events\Application\useCases\DeleteProductEvent;
 use src\admin\Events\Application\useCases\GetEventActive;
 use src\admin\Events\Application\useCases\GetEvents;
 use src\admin\Events\Application\useCases\GetProductsEvent;
 use src\admin\Events\Application\useCases\StoreEvent;
+use src\admin\Events\Application\useCases\StoreProductEvent;
 use src\admin\Events\Application\useCases\UpdateEvent;
 use src\admin\Events\Infrastructure\Repositories\EloquentEventsRepository;
+use src\admin\Events\Infrastructure\Validators\StoreBranchesProductEventRequest;
 use src\admin\Events\Infrastructure\Validators\StoreEventRequest;
+use src\admin\Events\Infrastructure\Validators\StoreProductEventRequest;
 use src\admin\Events\Infrastructure\Validators\UpdateEventRequest;
 use Throwable;
 
@@ -144,4 +149,49 @@ final class EventsController extends Controller {
             return $this->errorResponse($th->getMessage() || 'Se presento un error al obtener los eventos',[],500);
         }
     }   
+
+    public function storeProductsEvent(StoreProductEventRequest $request, $eventId){
+        try {
+            $storeProductEvent = new StoreProductEvent($this->eventsRepository);
+            $productEventResult = $storeProductEvent->execute($request->validated(), $eventId);
+            if($productEventResult['success']){
+                return $this->successResponse($productEventResult['message'],$productEventResult['data']);
+            }else{
+                return $this->errorResponse($productEventResult['message'],$productEventResult['data'],$productEventResult['status']);
+            }
+        }catch(Throwable $th){
+            Log::error('Error en store products event:', ['error' => $th->getMessage(),'file' => $th->getFile(),'line' => $th->getLine()]);
+            return $this->errorResponse($th->getMessage() || 'Se presento un error al almacenar los productos del evento',[],500);
+        }
+    }
+
+    public function deleteProductEvent(Request $request, $eventId, $productId){
+        try {
+            $deleteProductEvent = new DeleteProductEvent($this->eventsRepository);
+            $productEventResult = $deleteProductEvent->execute($eventId, $productId);
+            if($productEventResult['success']){
+                return $this->successResponse($productEventResult['message'],$productEventResult['data']);
+            }else{
+                return $this->errorResponse($productEventResult['message'],$productEventResult['data'],$productEventResult['status']);
+            }
+        }catch(Throwable $th){
+            Log::error('Error en delete products event:', ['error' => $th->getMessage(),'file' => $th->getFile(),'line' => $th->getLine()]);
+            return $this->errorResponse($th->getMessage() || 'Se presento un error al eliminar los productos del evento',[],500);
+        }
+    }
+
+    public function assignedBranch(StoreBranchesProductEventRequest $request, $eventId, $productId){
+        try{
+            $assignedBranch = new AssignBranches($this->eventsRepository);
+            $assignedBranchResult = $assignedBranch->execute($request->validated(), $eventId, $productId);
+            if($assignedBranchResult['success']){
+                return $this->successResponse($assignedBranchResult['message'],$assignedBranchResult['data']);
+            }else{
+                return $this->errorResponse($assignedBranchResult['message'],$assignedBranchResult['data'],$assignedBranchResult['status']);
+            }
+        }catch(Throwable $th){
+            Log::error('Error en assigned branch:', ['error' => $th->getMessage(),'file' => $th->getFile(),'line' => $th->getLine()]);
+            return $this->errorResponse($th->getMessage() || 'Se presento un error al asignar las sucursales al producto del evento',[],500);
+        }
+    }
 }
