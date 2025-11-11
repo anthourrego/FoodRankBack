@@ -12,12 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
-
-            // Primero eliminar la llave única
-            $table->dropUnique(['fingerprint_device']);
-
-            // Luego cambiar el tipo de columna
-            $table->string('fingerprint_device')->nullable()->change();
+            // Verificar si las columnas no existen antes de crearlas
+            $table->text('comment')->nullable()->change();
+            $table->string('latitude', 100)->nullable()->change();
+            $table->string('longitude', 100)->nullable()->change();
         });
     }
 
@@ -26,5 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('reviews', function (Blueprint $table) {
+        });
     }
 };
