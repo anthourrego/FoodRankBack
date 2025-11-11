@@ -25,4 +25,8 @@ class Configuration extends Model
         'updated_at' => 'datetime'
     ];
 
+    public function event(){
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
 }

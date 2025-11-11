@@ -24,6 +24,12 @@ class ConfigurationResource extends JsonResource
             'isActive' => $this->is_active,
             'createdAt' => $this->created_at?->format(DATE_ATOM),
             'updatedAt' => $this->updated_at?->format(DATE_ATOM),
+            'event' => $this->whenLoaded('event', function () {
+                return [
+                    'id' => $this->event->id,
+                    'name' => $this->event->name,
+                ];
+            }),
         ];
     }
 }

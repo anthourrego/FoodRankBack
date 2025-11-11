@@ -61,7 +61,7 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
 
     public function findAll(): ?array
     {
-        $foundConfigurations = ConfigurationModel::orderBy('key')->get();
+        $foundConfigurations = ConfigurationModel::orderBy('key')->with('event')->get();
         if($foundConfigurations){
 
             return ConfigurationResource::collection($foundConfigurations)->all();

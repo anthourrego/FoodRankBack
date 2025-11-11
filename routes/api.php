@@ -50,8 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{id}/toggle-status', [RestaurantProductController::class, 'toggleStatus']);
     });
 
-    Route::prefix('eventss')->group(base_path('src/admin/Events/Infrastructure/Routes/api.php'));
 });
+Route::prefix('eventss')->group(base_path('src/admin/Events/Infrastructure/Routes/api.php'));
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events-products/find', [EventProductsController::class, 'findEventProduct']);
