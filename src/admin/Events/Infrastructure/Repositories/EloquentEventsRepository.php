@@ -55,7 +55,7 @@ class EloquentEventsRepository implements EventsRepositoryInterface
     {
         $foundProducts = EventProduct::with(['restaurantProduct.restaurant.restaurantBranches.city', 'branchsProduct.branch', 'event'])->where('is_active', '=', 1)
             ->whereHas('event', function ($query) use ($idEvent) {
-                $query->where('is_active', '=', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())
+                $query->where('is_active', '=', 1)
                     ->where('id', '=', $idEvent);
             })
             ->get()->toArray();
