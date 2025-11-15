@@ -27,7 +27,11 @@ class ReviewsService
       }
     }
 
-    $vote = Review::where("event_product_id", $data['event_product_id'])->where("event_product_branch_id", $data['event_product_branch_id'])->where("ip", $data['ip'])->where("mac", $data['mac'])->first();
+    // Validar que no se haya votado desde la misma IP para el mismo producto
+    $vote = Review::where("event_product_id", $data['event_product_id'])
+      ->where("event_product_branch_id", $data['event_product_branch_id'])
+      ->where("ip", $data['ip'])
+      ->first();
 
     if (!$vote) {
       $review = Review::create($data);
