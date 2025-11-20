@@ -65,7 +65,7 @@ class RestaurantController extends Controller
         try {
             $data = $request->validated();
 
-            $existeName = Restaurant::where('name', $data['name'])->first();
+            $existeName = Restaurant::where('name', $data['name'])->where('id', '<>', $id)->first();
             if ($existeName) {
                 return response()->json([
                     'message' => 'El nombre ya esta almacenado',
