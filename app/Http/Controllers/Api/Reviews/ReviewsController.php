@@ -41,4 +41,15 @@ class ReviewsController extends Controller
         return response()->json($detailRanking,200);
     }
 
+    public function getRankingList(Request $request, $idEvent):JsonResponse
+    {
+        $rankingList = $this->reviewsService->getRankingList($request, $idEvent);
+        return response()->json($rankingList,200);
+    }
+
+    public function exportRankingList(Request $request, $idEvent)
+    {
+        return $this->reviewsService->exportRankingList($request, $idEvent);
+    }
+
 }

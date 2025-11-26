@@ -35,5 +35,13 @@ class Review extends Model
         return $this->belongsTo(EventProductBranch::class);
     }
 
+    /**
+     * Scope para filtrar reviews que tienen comentarios
+     */
+    public function scopeHasComment($query)
+    {
+        return $query->whereNotNull('comment')
+                     ->where('comment', '<>', '');
+    }
 
 }

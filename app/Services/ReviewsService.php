@@ -2,12 +2,18 @@
 
 namespace App\Services;
 
+use App\Exports\ReviewsExport;
 use App\Http\Requests\Review\StoreReviewRequest;
 use App\Models\EventProduct;
 use App\Models\EventProductBranch;
 use App\Models\Review;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 
 use function Illuminate\Log\log;
 
@@ -167,5 +173,83 @@ class ReviewsService
       "summary" => $summary,
       "reviews" => $reviews,
     ];
+  }
+
+  public function getRankingList(Request $request, $idEvent)
+  {
+    $paginate = $request->boolean('paginate', false);
+    
+    $query = QueryBuilder::for(Review::class)
+      ->with([
+        'eventProduct.restaurantProduct.restaurant:id,name',
+        'eventProduct.restaurantProduct:id,name,restaurant_id,image_url',
+      ])
+      ->whereHas('eventProduct', function ($query) use ($idEvent) {
+        $query->where('event_id', $idEvent);
+      })
+      ->allowedSorts([
+        'rating',
+        'created_at',
+        'updated_at',
+      ])
+      ->select([
+        'id',
+        'event_product_id',
+        'event_product_branch_id',
+        'rating',
+        'comment',
+        'ip',
+        'created_at',
+      ]);
+
+    
+    if ($paginate) {
+      $rankingList = $query
+        ->paginate($request->input('rows', 15))
+        ->appends($request->query())
+        ->through(function ($review) {
+          return $this->transformReviewData($review);
+        });
+    } else {
+      $rankingList = $query->get()->map(function ($review) {
+        return $this->transformReviewData($review);
+      });
+    }
+
+    return $rankingList;
+  }
+
+  private function transformReviewData($review)
+  {
+    return [
+      'id' => $review->id,
+      'rating' => $review->rating,
+      'comment' => $review->comment,
+      'ip' => $review->ip,
+      'created_at' => $review->created_at,
+      'product_name' => $review->eventProduct?->restaurantProduct?->name,
+      'product_id' => $review->eventProduct?->restaurantProduct?->id,
+      'product_image' => $review->eventProduct?->restaurantProduct?->image_url,
+      'restaurant_name' => $review->eventProduct?->restaurantProduct?->restaurant?->name,
+      'restaurant_id' => $review->eventProduct?->restaurantProduct?->restaurant?->id,
+    ];
+  }
+
+
+  public function exportRankingList(Request $request, $idEvent)
+  {
+    
+    $requestData = $request->all();
+    $requestData['paginate'] = false;
+    $exportRequest = new Request($requestData);
+    
+    
+    $reviews = $this->getRankingList($exportRequest, $idEvent);
+    
+    
+    $fileName = 'ranking_reviews_event_' . $idEvent . '_' . date('Y-m-d_His') . '.xlsx';
+    
+    // Exportar a Excel
+    return Excel::download(new ReviewsExport($reviews), $fileName);
   }
 }

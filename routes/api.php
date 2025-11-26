@@ -57,6 +57,8 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/events-products/find', [EventProductsController::class, 'findEventProduct']);
 Route::get('/events-products', [EventProductsController::class, 'index']);
 Route::post('/reviews/save-vote',[ReviewsController::class, 'store']);
+Route::get('/reviews/ranking-list/event/{idEvent}/export',[ReviewsController::class, 'exportRankingList']);
+Route::get('/reviews/ranking-list/event/{idEvent}',[ReviewsController::class, 'getRankingList']);
 Route::get('/reviews/ranking/event/{idEvent}',[ReviewsController::class, 'getRanking']);
 Route::get('/reviews/ranking/event-product/{event_product_id}',[ReviewsController::class, 'getDetailRankingProduct']);
 Route::get('/imageproduct/{product}', [EventProductsController::class, 'showImage']);
