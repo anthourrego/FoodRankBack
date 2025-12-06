@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'paginate_rows' => env('PAGINATE_ROWS', 10),
 
     /*
     |--------------------------------------------------------------------------

@@ -7,6 +7,8 @@ use App\Http\Requests\Review\StoreReviewRequest;
 use App\Models\EventProduct;
 use App\Models\EventProductBranch;
 use App\Models\Review;
+use App\Sorts\RestaurantNameSort;
+use App\Sorts\ProductNameSort;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -179,33 +181,52 @@ class ReviewsService
   {
     $paginate = $request->boolean('paginate', false);
     
-    $query = QueryBuilder::for(Review::class)
+    // Hacer joins necesarios para poder ordenar por campos de relaciones
+    $baseQuery = Review::query()
+      ->join('event_products as ep', 'reviews.event_product_id', '=', 'ep.id')
+      ->join('restaurant_products as rp', 'ep.product_id', '=', 'rp.id')
+      ->join('restaurants as r', 'rp.restaurant_id', '=', 'r.id')
+      ->where('ep.event_id', $idEvent)
+      ->select([
+        'reviews.id',
+        'reviews.event_product_id',
+        'reviews.event_product_branch_id',
+        'reviews.rating',
+        'reviews.comment',
+        'reviews.ip',
+        'reviews.created_at',
+      ]);
+    
+    $query = QueryBuilder::for($baseQuery)
       ->with([
         'eventProduct.restaurantProduct.restaurant:id,name',
         'eventProduct.restaurantProduct:id,name,restaurant_id,image_url',
       ])
-      ->whereHas('eventProduct', function ($query) use ($idEvent) {
-        $query->where('event_id', $idEvent);
-      })
+      ->allowedFilters([
+        AllowedFilter::callback('search', function ($query, $value) {
+          $searchValue = strtolower($value);
+          $query->where(function ($q) use ($searchValue) {
+            $q->whereRaw('LOWER(r.name) LIKE ?', ["%{$searchValue}%"])
+              ->orWhereRaw('LOWER(rp.name) LIKE ?', ["%{$searchValue}%"])
+              ->orWhereRaw('LOWER(reviews.comment) LIKE ?', ["%{$searchValue}%"])
+              ->orWhereRaw('LOWER(reviews.ip) LIKE ?', ["%{$searchValue}%"]);
+          });
+        }),
+      ])
       ->allowedSorts([
         'rating',
         'created_at',
         'updated_at',
-      ])
-      ->select([
-        'id',
-        'event_product_id',
-        'event_product_branch_id',
-        'rating',
-        'comment',
-        'ip',
-        'created_at',
+        AllowedSort::custom('restaurant_name', new RestaurantNameSort()),
+        AllowedSort::custom('product_name', new ProductNameSort()),
+        AllowedSort::custom('eventProduct.restaurantProduct.restaurant.name', new RestaurantNameSort()),
+        AllowedSort::custom('eventProduct.restaurantProduct.name', new ProductNameSort()),
       ]);
 
     
     if ($paginate) {
       $rankingList = $query
-        ->paginate($request->input('rows', 15))
+        ->paginate($request->input('rows', config('app.paginate_rows')))
         ->appends($request->query())
         ->through(function ($review) {
           return $this->transformReviewData($review);
