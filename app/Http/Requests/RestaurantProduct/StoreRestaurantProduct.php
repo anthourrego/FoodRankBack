@@ -16,7 +16,6 @@ class StoreRestaurantProduct extends FormRequest
     {
         $this->merge([
             'description' => $this->input('description') ?? "",
-            'image_url' => $this->input('image_url') ?? "",
         ]);
     }
 
@@ -36,7 +35,7 @@ class StoreRestaurantProduct extends FormRequest
                     ->ignore($productId)
             ],
             'description' => 'required|string|min:10',
-            'image_url' => 'nullable|url|max:255',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'is_active' => 'boolean',
             'restaurant_id' => 'required|exists:restaurants,id'
         ];
@@ -51,7 +50,9 @@ class StoreRestaurantProduct extends FormRequest
             'name.unique' => 'Ya existe un producto con este nombre para este restaurante',
             'description.required' => 'La descripción es obligatoria',
             'description.min' => 'La descripción debe tener al menos 10 caracteres',
-            'image_url.url' => 'La URL de la imagen no es válida',
+            'image.image' => 'El archivo debe ser una imagen',
+            'image.mimes' => 'La imagen debe ser de tipo: jpeg, jpg, png, gif o webp',
+            'image.max' => 'La imagen no puede exceder 5MB',
             'restaurant_id.required' => 'El restaurante es obligatorio',
             'restaurant_id.exists' => 'El restaurante seleccionado no existe',
         ];
