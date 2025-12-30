@@ -113,9 +113,9 @@ class RestaurantProductService
     }
 
     $fileName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-    $path = $image->storeAs('images/products', $fileName, 'public');
+    $image->storeAs('images/products', $fileName, 'public');
 
-    return url('storage/' . $path);
+    return $fileName;
   }
 
   private function deleteImage($imageUrl)
@@ -124,7 +124,7 @@ class RestaurantProductService
       return;
     }
 
-    $path = str_replace(url('storage/'), '', $imageUrl);
+    $path = 'images/products/' . $imageUrl;
 
     if (Storage::disk('public')->exists($path)) {
       Storage::disk('public')->delete($path);
