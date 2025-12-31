@@ -34,9 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [RestaurantBranchController::class, 'show']);
         Route::put('/{id}', [RestaurantBranchController::class, 'update']);
         Route::delete('/{id}', [RestaurantBranchController::class, 'destroy']);
-        
+
         Route::patch('/{id}/toggle-status', [RestaurantBranchController::class, 'toggleStatus']);
-        
+
         Route::get('/stats/restaurant/{restaurantId}', [RestaurantBranchController::class, 'getStatsByRestaurant']);
     });
 
@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{id}/toggle-status', [RestaurantProductController::class, 'toggleStatus']);
     });
 
+    Route::prefix('configurations')->group(base_path('src/admin/Configuration/Infrastructure/Routes/api.php'));
 });
 Route::prefix('eventss')->group(base_path('src/admin/Events/Infrastructure/Routes/api.php'));
 
@@ -57,14 +58,11 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/events-products/find', [EventProductsController::class, 'findEventProduct']);
 Route::get('/events-products', [EventProductsController::class, 'index']);
 Route::post('/reviews/save-vote',[ReviewsController::class, 'store']);
+Route::get('/imageproduct/{product}', [EventProductsController::class, 'showImage']);
+Route::get('/imageproduct', [EventProductsController::class, 'showImage']);
+
 Route::get('/reviews/ranking-list/event/{idEvent}/export',[ReviewsController::class, 'exportRankingList']);
 Route::get('/reviews/ranking-list/event/{idEvent}',[ReviewsController::class, 'getRankingList']);
 Route::get('/reviews/ranking/event/{idEvent}',[ReviewsController::class, 'getRanking']);
 Route::get('/reviews/ranking/event-product/{event_product_id}',[ReviewsController::class, 'getDetailRankingProduct']);
-Route::get('/imageproduct/{product}', [EventProductsController::class, 'showImage']);
-Route::get('/imageproduct', [EventProductsController::class, 'showImage']);
-
-
-Route::prefix('configurations')->group(base_path('src/admin/Configuration/Infrastructure/Routes/api.php'));
-
 

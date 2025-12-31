@@ -29,11 +29,12 @@ class ConfigurationController
             'success' => false,
         ];
         try {
-            $configurations = new GetConfigurations($this->configurationRepository);
+            $configurations = new GetConfigurations($this->configurationRepository, $request->get('eventId'));
             $configurations = $configurations->execute();
-            
+
             return response()->json([
                 'success' => true,
+                'message' => $request->get('eventId'),
                 'data' => $configurations
             ]);
         } catch (\Exception $e) {
@@ -58,7 +59,7 @@ class ConfigurationController
             $message = $e->getMessage() ?? 'Error al obtener la configuración';
             return $this->errorResponse($message, 500);
 
-        } 
+        }
     }
 
     public function update(Request $request, string $key): JsonResponse
@@ -90,14 +91,14 @@ class ConfigurationController
 
     public function store(StoreConfigurationRequest $request)
     {
-       
-        
-        
+
+
+
         try {
             $createConfiguration = new CreateConfiguration($this->configurationRepository);
             $newConfiguration = $createConfiguration->execute($request);
-          
-            
+
+
             return $this->successResponse('Configuración creada exitosamente', $newConfiguration, Response::HTTP_CREATED);
         }catch(\Exception $e){
             $message =  $e->getMessage() ?? 'Error al crear la configuración';
@@ -109,6 +110,6 @@ class ConfigurationController
             ]);
             return $this->errorResponse($message );
         }
-        
+
     }
 }

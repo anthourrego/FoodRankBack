@@ -104,6 +104,7 @@ class EloquentConfigurationRepository implements ConfigurationRepositoryInterfac
     {
         $configFound = ConfigurationModel::where('event_id', $eventId)
             ->orderBy('key')
+            ->with('event')
             ->get();
             
         if($configFound){
